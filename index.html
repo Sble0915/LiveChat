@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>LiveChat CLI Test Client</title>
+</head>
+<body>
+    <h2>💬 실시간 채팅 서버 테스트창</h2>
+    <input type="text" id="messageInput" placeholder="메시지를 입력하세요..." onkeypress="if(event.keyCode==13) sendMessage()">
+    <button onclick="sendMessage()">전송</button>
+    <div id="chatLog" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; background-color: #f9f9f9; font-family: monospace;"></div>
+
+    <script>
+        // 같은 호스트(리눅스 서버 서버 자체)에서 브라우저를 띄운다면 localhost 그대로 쓰시면 됩니다.
+        // 만약 외부 PC나 모바일에서 접속하는 거라면 "localhost" 대신 서버의 "실제 외부 IP"를 적어주세요.
+        const serverIp = window.location.hostname || "125.240.185.77"; 
+        const ws = new WebSocket(`ws://${serverIp}:8080/ws/chat`);
+
+        ws.onopen = () => { appendLog("🟢 서버와 웹소켓 연결 성공!"); };
+        ws.onclose = () => { appendLog("🔴 서버와 연결 종료."); };
+        ws.onerror = (err) => { appendLog("⚠️ 에러 발생: 서버가 꺼져있거나 포트가 막혔을 수 있습니다."); };
+        
+        // 서버로부터 브로드캐스트된 메시지 수신 시 화면에 표시
+        ws.onmessage = (event) => { appendLog("📩 수신: " + event.data); };
+
+        function sendMessage() {
+            const input = document.getElementById("messageInput");
+            if (input.value.trim() !== "") {
+                ws.send(input.value); // 서버로 텍스트 전송
+                input.value = "";
+            }
+        }
+
+        function appendLog(msg) {
+            const logDiv = document.getElementById("chatLog");
+            logDiv.innerHTML += msg + "<br>";
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+    </script>
+</body>
+</html>
