@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'sble'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = "21" // 본인의 JDK 버전에 맞게 17 또는 21로 수정 가능
+
+repositories {
+    mavenCentral() // 라이브러리를 다운로드할 글로벌 저장소
+}
+
+dependencies {
+    // Spring Boot 핵심 및 웹소켓 라이브러리
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    
+    // 테스트용 라이브러리
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
