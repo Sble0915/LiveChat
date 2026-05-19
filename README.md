@@ -8,12 +8,12 @@
 
 ## 기술 스택
 
-###Backend
+### Backend
 - **Language :** Java 25
 - **Build Tool :** Gradle
 - **Environment :** Ubuntu Server (CLI)
 
-##Client
+### Client
 - **테스트 단계 :** HTML5, CSS3, JavaScript 등
 - **최종 단계 :** Java25, JavaFX / Swing
 
