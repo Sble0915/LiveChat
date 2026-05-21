@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>SBLE 실시간 라이브 채팅</title>
+</head>
+<body style="margin: 20px; font-family: sans-serif;">
+    <h2>💬 실시간 채팅 서버 (호스트 배포판)</h2>
+    <input type="text" id="messageInput" placeholder="메시지를 입력하세요..." onkeypress="if(event.keyCode==13) sendMessage()" style="width: 300px; padding: 5px;">
+    <button onclick="sendMessage()" style="padding: 5px 10px;">전송</button>
+    <div id="chatLog" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px; height: 400px; overflow-y: scroll; background-color: #f9f9f9; font-family: monospace;"></div>
+
+    <script>
+        // 현재 브라우저 주소창에 찍힌 호스트 IP와 포트(8080)를 자동으로 가져와 웹소켓 주소를 매핑합니다.
+        const host = window.location.hostname;
+        const port = window.location.port || "8080";
+        const ws = new WebSocket(`ws://${host}:${port}/ws/chat`);
+
+        ws.onopen = () => { appendLog("🟢 서버와 실시간 웹소켓 연결 성공!"); };
+        ws.onclose = () => { appendLog("🔴 서버와 연결이 종료되었습니다."); };
+        ws.onerror = (err) => { appendLog("⚠️ 에러 발생: 방화벽이나 포트 개방 상태를 확인하세요."); };
+        
+        ws.onmessage = (event) => { appendLog("📩 수신: " + event.data); };
+
+        function sendMessage() {
+            const input = document.getElementById("messageInput");
+            if (input.value.trim() !== "") {
+                ws.send(input.value);
+                input.value = "";
+            }
+        }
+
+        function appendLog(msg) {
+            const logDiv = document.getElementById("chatLog");
+            logDiv.innerHTML += msg + "<br>";
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+    </script>
+</body>
+</html>
